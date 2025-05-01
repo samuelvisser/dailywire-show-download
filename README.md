@@ -1,6 +1,6 @@
 # DailyWire Show Downloader
 
-This is a simple Docker image that is made to download premium shows from the DailyWire website.<br>
+This is a Python 3.13 package that downloads premium shows from the DailyWire website.<br>
 Specifically, it is made to be used together with other tools to create a private RSS feed for premium DailyWire Shows.<br>
 In no way does this project help pirate premium shows, as it requires an active premium DailyWire account to work.
 
@@ -13,6 +13,8 @@ In no way does this project help pirate premium shows, as it requires an active 
 - Ensures filenames only use ASCII characters for maximum compatibility
 - Configurable download schedule via cron
 - Displays cron job logs in the console for easy monitoring
+- Implemented in Python 3.13 with a clean, modular structure
+- Can be used as a standalone Python package or via Docker
 
 ## Configuration
 
@@ -45,15 +47,50 @@ When `save_nfo_file` is enabled, the tool will:
 
 Audiobookshelf will automatically read these .nfo files and include both the titles and descriptions in its RSS feed.
 
-## Build Docker image
-docker build -t dailywire-downloader-cron .
+## Installation and Usage
+
+### Using Python Package
+
+#### Installation
+
+```bash
+# Install from the repository
+git clone https://github.com/samuelvisser/dailywire-show-download.git
+cd dailywire-show-download
+pip install -e .
+
+# Or install directly from GitHub (if repository is public)
+pip install git+https://github.com/samuelvisser/dailywire-show-download.git
+```
+
+#### Usage
+
+```bash
+# Run with default configuration
+dailywire-downloader
+
+# Specify custom configuration and cookies files
+dailywire-downloader --config /path/to/config.yml --cookies /path/to/cookies.txt
+```
+
+### Using Docker
+
+#### Build Docker image
+```bash
+docker build -t dailywire-downloader .
 
 docker run -d \
   -v ./config:/config:ro \
   -v ./downloads:/downloads \
-  dailywire-downloader-cron
+  dailywire-downloader
+```
 
-## Using the pre-built image
+#### Using Docker Compose
+```bash
+docker-compose up -d
+```
+
+#### Using the pre-built image
 You can pull the pre-built image from GitHub Container Registry:
 
 ```bash
@@ -66,6 +103,7 @@ docker run -d \
 ```
 
 ### Push new update to github registry (dev only)
+```bash
 docker build -t dailywire-downloader .
 
 echo ACCESS_TOKEN | docker login ghcr.io -u samuelvisser --password-stdin
@@ -73,3 +111,4 @@ echo ACCESS_TOKEN | docker login ghcr.io -u samuelvisser --password-stdin
 docker tag dailywire-downloader ghcr.io/samuelvisser/dailywire-downloader:latest
 
 docker push ghcr.io/samuelvisser/dailywire-downloader:latest
+```

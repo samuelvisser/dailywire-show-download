@@ -4,7 +4,6 @@ set -e
 CONFIG_FILE="${CONFIG_FILE:-/config/config.yml}"
 CRON_TMPL="/etc/cron.d/dailywire.cron.template"
 CRON_FILE="/etc/cron.d/dailywire.cron"
-DOWNLOAD_SCRIPT="/usr/local/bin/download.sh"
 
 # Sanity check
 [ -f "$CONFIG_FILE" ] || {
@@ -32,7 +31,7 @@ crontab "$CRON_FILE"
 
 # Run one-off download immediately
 echo "$(date '+%Y-%m-%d %H:%M:%S'): Initial download on startup"
-"$DOWNLOAD_SCRIPT"
+python -m dailywire_downloader.download
 
 # Start tailing the cron log in the background
 tail -f /var/log/cron.log &
